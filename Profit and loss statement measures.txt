@@ -1,0 +1,58 @@
+P & L Values = 
+ 
+ var res = SWITCH(
+    TRUE(),
+    MAX('P & L Rows'[Order]) = 1, [GS $]/1000000, 
+    MAX('P & L Rows'[Order]) = 2, [Pre Invoice Deduction $]/1000000, 
+    MAX('P & L Rows'[Order]) = 3, [NIS $]/1000000, 
+    MAX('P & L Rows'[Order]) = 4, [Post Invoice Deduction $]/1000000, 
+    MAX('P & L Rows'[Order]) = 5, [Post Invoice other Deduction $]/1000000, 
+    MAX('P & L Rows'[Order]) = 6, [Total Post Invoice Deduction $]/1000000, 
+    MAX('P & L Rows'[Order]) = 7, [NS $]/1000000, 
+    MAX('P & L Rows'[Order]) = 8, [Manufacturing Cost]/1000000, 
+    MAX('P & L Rows'[Order]) = 9, [Freight Cost]/1000000, 
+    MAX('P & L Rows'[Order]) = 10, [Other Cost]/1000000, 
+    MAX('P & L Rows'[Order]) = 11, [Total COGS]/1000000, 
+    MAX('P & L Rows'[Order]) = 12, [GM $]/1000000, 
+    MAX('P & L Rows'[Order]) = 13, [GM %]*100, 
+    MAX('P & L Rows'[Order]) = 14, [GM/Unit], 
+    MAX('P & L Rows'[Order]) = 15, [Operational Expenses $]/1000000, 
+    MAX('P & L Rows'[Order]) = 16, [Net Profit $]/1000000, 
+    MAX('P & L Rows'[Order]) = 17, [Net Profit %]*100
+)
+return
+IF(HASONEVALUE('P & L Rows'[Description]), res, [NS $]/1000000)
+
+GS $ = SUM(fact_actuals_estimates[gross_sales])
+Pre Invoice Deduction $ = [GS $]-[NIS $]
+NIS $ = SUM(fact_actuals_estimates[net_invoice_sales_amount])
+Post Invoice Deduction $ = SUM(fact_actuals_estimates[post_invoice_deduction_amount])
+Post Invoice other Deduction $ = SUM(fact_actuals_estimates[post_invoice_other_deduction_amount])
+Total Post Invoice Deduction $ = [Post Invoice Deduction $]+[Post Invoice other Deduction $] 
+NS $ = SUM(fact_actuals_estimates[net_sales])
+Manufacturing Cost = SUM(fact_actuals_estimates[manufacturing_cost])
+Freight Cost = SUM(fact_actuals_estimates[freight_cost])
+Other Cost = SUM(fact_actuals_estimates[other_freight_cost_amount])
+Total COGS = [Manufacturing Cost]+[Freight Cost]+[Other Cost]
+GM $ = [NS $]-[Total COGS]
+GM % = DIVIDE([GM $],[NS $],0)
+GM/Unit = DIVIDE([GM $],[Quantity],0)
+Operational Expenses $ = -([Ads and Promotions] + [Other Operational Expenses])
+Net Profit $ = [GM $]+[Operational Expenses $]
+Net Profit % = DIVIDE([Net Profit $],[NS $],0)
+
+P & L Final Values = 
+SWITCH(
+    TRUE(),
+    SELECTEDVALUE(fiscal_year[fy_desc]) = MAX('P & L columns'[Col Header]),[P & L Values],
+    MAX('P & L columns'[Col header]) = "BM", [P & L BM], 
+    MAX('P & L columns'[Col header]) = "Chg", [P & L Chg], 
+    MAX('P & L columns'[Col header]) = "Chg %", [P & L Chg %])
+
+P & L Chg = 
+var res = [P & L Values]-[P & L BM]
+
+return
+IF(ISBLANK([P & L BM]) || ISBLANK([P & L Values]),BLANK(),res)
+
+P & L Chg % = DIVIDE([P & L Chg],[P & L BM],0)*100
