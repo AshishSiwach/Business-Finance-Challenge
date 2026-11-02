@@ -58,7 +58,7 @@ rather than one DAX measure per line item. A single switching measure,
 keyed on the row's display order (`MAX('P & L Rows'[Order])`), resolves
 which underlying calculation to return for whichever P&L line is on
 screen; the full measure is in
-[`Profit and loss statement measures.txt`](./Profit%20and%20loss%20statement%20measures.txt).
+[`DAX_measures.txt`](./Profit%20and%20loss%20statement%20measures.txt).
 
 This keeps the report maintainable: adding or re-ordering a P&L line is a
 change to the `P & L Rows` table, not a new DAX measure, and the same
