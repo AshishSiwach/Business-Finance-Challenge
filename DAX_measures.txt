@@ -1,0 +1,462 @@
+Sales		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Revenue / Expense Group] = "Sales"
+)
+Other Income		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Revenue / Expense Group] = "Other income"
+)
+Consulting Revenue		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Revenue / Expense Group] = "Consulting and professional services"
+)
+Total Revenue		6	
+[Sales] + [Other Income] + [Consulting Revenue]
+Labor		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Labor"
+)
+Materials		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Materials"
+)
+Packaging		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Packaging"
+)
+Sales Expense		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Sales"
+)
+Shipping		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Shipping"
+)
+Other Expenses		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Other", revenue_expense[Revenue / Expense Group] = "COGS"
+)
+Total COGS		6	[Labor] + [Materials] + [Other Expenses] + [Packaging] + [Sales Expense] + [Shipping]
+Gross Profit		6	
+[Total Revenue] + [Total COGS]
+Equipment		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Equipment"
+)
+Marketing		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Marketing"
+)
+Payroll		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Payroll"
+)
+R & D		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "R&D"
+)
+Rent		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Rent"
+)
+Others		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Expense subgroup] = "Other", revenue_expense[Revenue / Expense Group] = "OPEX"
+)
+Total OPEX		6	
+[Equipment] + [Marketing] + [Others] + [Payroll] + [R & D] + [Rent]
+Earnings before Interest and Tax		6	
+[Gross Profit] + [Total OPEX]
+Interest and Tax		6	
+CALCULATE(
+    SUM(revenue_expense[Amount, $]),
+    revenue_expense[Revenue / Expense Group] = "Interest and Tax"
+)
+Net Profit		6	
+[Earnings before Interest and Tax] + [Interest and Tax]
+P & L Values		2	
+ 
+ var res = SWITCH(
+    TRUE(),
+    MAX('Onyx Data Challenge'[Order]) = 1, "", 
+    MAX('Onyx Data Challenge'[Order]) = 2, [Sales]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 3, [Other Income]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 4, [Consulting Revenue]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 5, [Total Revenue]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 6, "", 
+    MAX('Onyx Data Challenge'[Order]) = 7, [Labor]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 8, [Materials]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 9, [Packaging]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 10, [Sales Expense]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 11, [Shipping]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 12, [Other Expenses]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 13, [Total COGS]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 14, [Gross Profit]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 15, "", 
+    MAX('Onyx Data Challenge'[Order]) = 16, [Equipment]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 17, [Marketing]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 18, [Payroll]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 19, [R & D]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 20, [Rent]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 21, [Others]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 22, [Total OPEX]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 23, [Earnings before Interest and Tax]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 24, [Interest and Tax]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 25, [Net Profit]/1000
+)
+return
+FORMAT(res, "#,##0.00K; (#,##0.00K)")
+Sales PM		6	CALCULATE(
+    [Sales],
+    PREVIOUSMONTH(dim_date[date])
+)
+Sales vs PM%		8	DIVIDE([Sales] - [Sales PM],[Sales PM],BLANK())
+Other Income PM		6	CALCULATE(
+    [Other Income],
+    PREVIOUSMONTH(dim_date[date])
+)
+Consulting Revenue PM		6	CALCULATE(
+    [Consulting Revenue],
+    PREVIOUSMONTH(dim_date[date])
+)
+Other Income vs PM%		8	DIVIDE([Other Income] - [Other Income PM],[Other Income PM], BLANK())
+Consulting Revenue vs PM%		8	DIVIDE([Consulting Revenue] - [Consulting Revenue PM],[Consulting Revenue PM], BLANK())
+Total Revenue PM		6	
+CALCULATE(
+    [Total Revenue],
+    PREVIOUSMONTH(dim_date[date])
+)
+Total Revenue vs PM%		8	DIVIDE([Total Revenue] - [Total Revenue PM],[Total Revenue PM],BLANK())
+Labor PM		6	
+CALCULATE(
+    [Labor],
+    PREVIOUSMONTH(dim_date[date])
+)
+Labor vs PM%		8	DIVIDE([Labor] - [Labor PM],[Labor PM], BLANK())
+Materials PM		6	
+CALCULATE(
+    [Materials],
+    PREVIOUSMONTH(dim_date[date])
+)
+Materials vs PM%		8	DIVIDE([Materials] - [Materials PM],[Materials PM], BLANK())
+Other Expenses PM		6	
+CALCULATE(
+    [Other Expenses],
+    PREVIOUSMONTH(dim_date[date])
+)
+Other Expenses vs PM%		8	DIVIDE([Other Expenses] - [Other Expenses PM],[Other Expenses PM],BLANK())
+Packaging PM		6	
+CALCULATE(
+    [Packaging],
+    PREVIOUSMONTH(dim_date[date])
+)
+Packaging vs PM%		8	DIVIDE([Packaging] - [Packaging PM],[Packaging PM],BLANK())
+Sales Expense PM		6	
+CALCULATE(
+    [Sales Expense],
+    PREVIOUSMONTH(dim_date[date])
+)
+Sales Expense vs PM%		8	DIVIDE([Sales Expense] - [Sales Expense PM],[Sales Expense PM],BLANK())
+Shipping PM		6	
+CALCULATE(
+    [Shipping],
+    PREVIOUSMONTH(dim_date[date])
+)
+Shipping vs PM%		8	DIVIDE([Shipping] - [Shipping PM],[Shipping PM],BLANK())
+Total COGS PM		6	
+CALCULATE(
+    [Total COGS],
+    PREVIOUSMONTH(dim_date[date])
+)
+Total COGS vs PM%		8	DIVIDE([Total COGS] - [Total COGS PM],[Total COGS PM],BLANK())
+Gross Profit PM		6	
+CALCULATE(
+    [Gross Profit],
+    PREVIOUSMONTH(dim_date[date])
+)
+Gross Profit vs PM%		8	DIVIDE([Gross Profit] - [Gross Profit PM],[Gross Profit PM],BLANK())
+Equipment PM		6	
+CALCULATE(
+    [Equipment],
+    PREVIOUSMONTH(dim_date[date])
+)
+Equipment vs PM%		8	DIVIDE([Equipment] - [Equipment PM],[Equipment PM],BLANK())
+Marketing PM		6	
+CALCULATE(
+    [Marketing],
+    PREVIOUSMONTH(dim_date[date])
+)
+Marketing vs PM%		8	DIVIDE([Marketing] - [Marketing PM],[Marketing PM],BLANK())
+Others PM		6	
+CALCULATE(
+    [Others],
+    PREVIOUSMONTH(dim_date[date])
+)
+Others vs PM%		8	DIVIDE([Others] - [Others PM],[Others PM],BLANK())
+Payroll PM		6	
+CALCULATE(
+    [Payroll],
+    PREVIOUSMONTH(dim_date[date])
+)
+Payroll vs PM%		8	DIVIDE([Payroll] - [Payroll PM],[Payroll PM],BLANK())
+R&D PM		6	
+CALCULATE(
+    [R & D],
+    PREVIOUSMONTH(dim_date[date])
+)
+R&D vs PM%		8	DIVIDE([R & D] - [R&D PM],[R&D PM],BLANK())
+Rent PM		6	
+CALCULATE(
+    [Rent],
+    PREVIOUSMONTH(dim_date[date])
+)
+Rent vs PM%		8	DIVIDE([Rent] - [Rent PM],[Rent PM],BLANK())
+Total OPEX PM		6	
+CALCULATE(
+    [Total OPEX],
+    PREVIOUSMONTH(dim_date[date])
+)
+Total OPEX vs PM%		8	DIVIDE([Total OPEX] - [Total OPEX PM],[Total OPEX PM],BLANK())
+Earnings Before Interest and Tax PM		6	
+CALCULATE(
+    [Earnings before Interest and Tax],
+    PREVIOUSMONTH(dim_date[date])
+)
+Earnings before Interest and TAX vs PM%		8	
+DIVIDE([Earnings before Interest and Tax] - [Earnings Before Interest and Tax PM],
+[Earnings Before Interest and Tax PM],BLANK())
+Interest and Tax PM		6	
+CALCULATE(
+    [Interest and Tax],
+    PREVIOUSMONTH(dim_date[date])
+)
+Interest and Tax vs PM%		8	DIVIDE([Interest and Tax] - [Interest and Tax PM],[Interest and Tax PM],BLANK())
+Net Profit PM		6	
+CALCULATE(
+    [Net Profit],
+    PREVIOUSMONTH(dim_date[date])
+)
+Net Profit vs PM%		8	DIVIDE([Net Profit] - [Net Profit PM],[Net Profit PM],BLANK())
+P & L Values vs PM%		20	
+ 
+ var res = SWITCH(
+    TRUE(), 
+    MAX('Onyx Data Challenge'[Order]) = 1, "",
+    MAX('Onyx Data Challenge'[Order]) = 2, [Sales vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 3, [Other Income vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 4, [Consulting Revenue vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 5, [Total Revenue vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 6, "",
+    MAX('Onyx Data Challenge'[Order]) = 7, [Labor vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 8, [Materials vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 9, [Packaging vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 10, [Sales Expense vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 11, [Shipping vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 12, [Other Expenses vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 13, [Total COGS vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 14, [Gross Profit vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 15, "",
+    MAX('Onyx Data Challenge'[Order]) = 16, [Equipment vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 17, [Marketing vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 18, [Payroll vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 19, [R&D vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 20, [Rent vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 21, [Others vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 22, [Total OPEX vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 23, [Earnings before Interest and TAX vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 24, [Interest and Tax vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 25, [Net Profit vs PM%]
+)
+return
+res
+P & L Final Values		20	
+SWITCH(
+    TRUE(),
+    SELECTEDVALUE(dim_date[Month Name]) = MAX('P & L columns'[Col Header]),[P & L Values], 
+    MAX('P & L columns'[Col header]) = "vs PM%", [P & L Values vs PM%])
+
+Total Amount		6	
+SUM(revenue_expense[Amount, $])
+Highlight Color		2	
+IF(
+    MAX('Onyx Data Challenge'[Description])
+    IN{
+        "Total Revenue",
+        "Total COGS",
+        "Gross Profit",
+        "Total OPEX",
+        "EBIT",
+        "Net Profit"
+    },
+    "#b047b0",
+    "#101727"
+)
+Exp P & L Values		8	
+ 
+ var res = SWITCH(
+    TRUE(), 
+    MAX('Onyx Data Challenge'[Order]) = 1, [Sales]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 2, [Other Income]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 3, [Consulting Revenue]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 4, [Total Revenue]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 5, [Labor]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 6, [Materials]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 7, [Packaging]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 8, [Sales Expense]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 9, [Shipping]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 10, [Other Expenses]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 11, [Total COGS]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 12, [Gross Profit]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 13, [Equipment]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 14, [Marketing]/1000, 
+    MAX('Onyx Data Challenge'[Order]) = 15, [Payroll]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 16, [R & D]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 17, [Rent]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 18, [Others]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 19, [Total OPEX]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 20, [Earnings before Interest and Tax]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 21, [Interest and Tax]/1000,
+    MAX('Onyx Data Challenge'[Order]) = 22, [Net Profit]/1000
+)
+return
+res
+Exp P & L Final Values		20	
+SWITCH(
+    TRUE(),
+    SELECTEDVALUE(dim_date[Month Name]) = MAX('P & L columns'[Col Header]),[Exp P & L Values], 
+    MAX('P & L columns'[Col header]) = "vs PM%", [P & L Values vs PM%])
+Format Exp P & L Values		2	
+ 
+ var res = SWITCH(
+    TRUE(), 
+    MAX('Onyx Data Challenge'[Order]) = 1, FORMAT([Sales]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 2, FORMAT([Other Income]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 3, FORMAT([Consulting Revenue]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 4, FORMAT([Total Revenue]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 5, FORMAT([Labor]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 6, FORMAT([Materials]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 7, FORMAT([Packaging]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 8, FORMAT([Sales Expense]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 9, FORMAT([Shipping]/1000, "##,###; (##,###); -"),
+    MAX('Onyx Data Challenge'[Order]) = 10, FORMAT([Other Expenses]/1000, "##,###; (##,###); -"),
+    MAX('Onyx Data Challenge'[Order]) = 11, FORMAT([Total COGS]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 12, FORMAT([Gross Profit]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 13, FORMAT([Equipment]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 14, FORMAT([Marketing]/1000, "##,###; (##,###); -"), 
+    MAX('Onyx Data Challenge'[Order]) = 15, FORMAT([Payroll]/1000, "##,###; (##,###); -"),
+    MAX('Onyx Data Challenge'[Order]) = 16, FORMAT([R & D]/1000, "##,###; (##,###); -"),
+    MAX('Onyx Data Challenge'[Order]) = 17, FORMAT([Rent]/1000, "##,###; (##,###); -"),
+    MAX('Onyx Data Challenge'[Order]) = 18, FORMAT([Others]/1000, "##,###; (##,###); -"),
+    MAX('Onyx Data Challenge'[Order]) = 19, FORMAT([Total OPEX]/1000, "##,###; (##,###); -"),
+    MAX('Onyx Data Challenge'[Order]) = 20, FORMAT([Earnings before Interest and Tax]/1000, "##,###; (##,###); -"),
+    MAX('Onyx Data Challenge'[Order]) = 21, FORMAT([Interest and Tax]/1000, "##,###; (##,###); -"),
+    MAX('Onyx Data Challenge'[Order]) = 22, FORMAT([Net Profit]/1000, "##,###; (##,###); -")
+)
+return
+res
+Format Exp P & L Values vs PM%		2	
+ 
+ var res = SWITCH(
+    TRUE(), 
+    MAX('Onyx Data Challenge'[Order]) = 1, [Sales vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 2, [Other Income vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 3, [Consulting Revenue vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 4, [Total Revenue vs PM%],  
+    MAX('Onyx Data Challenge'[Order]) = 5, [Labor vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 6, [Materials vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 7, [Packaging vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 8, [Sales Expense vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 9, [Shipping vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 10, [Other Expenses vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 11, [Total COGS vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 12, [Gross Profit vs PM%],  
+    MAX('Onyx Data Challenge'[Order]) = 13, [Equipment vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 14, [Marketing vs PM%], 
+    MAX('Onyx Data Challenge'[Order]) = 15, [Payroll vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 16, [R&D vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 17, [Rent vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 18, [Others vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 19, [Total OPEX vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 20, [Earnings before Interest and TAX vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 21, [Interest and Tax vs PM%],
+    MAX('Onyx Data Challenge'[Order]) = 22, [Net Profit vs PM%]
+)
+return
+FORMAT(res * 100, "##,###; (##,###); -")
+Format Exp P & L Final Values		2	
+SWITCH(
+    TRUE(),
+    SELECTEDVALUE(dim_date[Month Name]) = MAX('P & L columns'[Col Header]),[Format Exp P & L Values], 
+    MAX('P & L columns'[Col header]) = "vs PM%", [Format Exp P & L Values vs PM%])
+Month P & L Values		8	
+IF(
+    SELECTEDVALUE(dim_date[Month Name]) = MAX('P & L columns'[Col Header]),[Exp P & L Values])
+Month P & L Values vs PM%		20	
+IF(
+    SELECTEDVALUE(dim_date[Month Name]) = MAX('P & L columns'[Col Header]),[P & L Values vs PM%])
+Sales % of Sales		8	
+DIVIDE([Sales], [Sales], 0)
+Other Income % of Sales		8	
+DIVIDE([Other Income], [Sales], 0)
+Consulting Revenue % of Sales		8	
+DIVIDE([Consulting Revenue], [Sales], 0)
+Gross Margin		8	DIVIDE([Gross Profit], [Total Revenue], 0)
+Operating Margin		8	
+DIVIDE([Earnings before Interest and Tax], [Total Revenue], 0)
+Net Margin		8	
+DIVIDE([Net Profit], [Total Revenue], 0)
+Positive Total COGS		6	-1 * [Total COGS]
+Positive Total OPEX		6	-1 * [Total OPEX]
+Positive Interest and Tax		6	
+-1 * [Interest and Tax]
+Total Expenses		6	
+-1 * ([Total COGS] + [Total OPEX] + [Interest and Tax])
+Positive Labor		6	-1 * ([Labor])
+Positive Materials		6	-1 * ([Materials])
+Postive Other expenses		6	-1 * ([Other Expenses]) 
+Positive Packaging		6	-1 * ([Packaging])
+Positive Sales Expense		6	-1 * ([Sales Expense])
+Positive Shipping		6	-1 * ([Shipping])
+Labor % of Revenue		8	DIVIDE([Positive Labor], [Total Revenue], 0)
+Materials % of Revenue		8	DIVIDE([Positive Materials], [Total Revenue], 0)
+Other Expenses % of Revenue		8	DIVIDE([Postive Other expenses], [Total Revenue], 0)
+Packaging % of Revenue		8	DIVIDE([Positive Packaging], [Total Revenue], 0)
+Sales Expense % of Revenue		8	DIVIDE([Positive Sales Expense], [Total Revenue], 0)
+Shipping % of Revenue		8	DIVIDE([Positive Shipping], [Total Revenue], 0)
+Positive Equipment		6	-1 * ([Equipment])
+Positive Marketing		6	-1 * ([Marketing])
+Positive Payroll		6	-1 * ([Payroll])
+Positive R&D		6	-1 * ([R & D])
+Positive Rent		6	-1 * ([Rent])
+Positive Others		6	-1 * ([Others])
+Equipment % of Revenue		8	DIVIDE([Positive Equipment], [Total Revenue], 0)
+Marketing % of Revenue		8	DIVIDE([Positive Marketing], [Total Revenue], 0)
+Payroll % of Revenue		8	DIVIDE([Positive Payroll], [Total Revenue], 0)
+R&D % of Revenue		8	DIVIDE([Positive R&D], [Total Revenue], 0)
+Rent % of Revenue		8	DIVIDE([Positive Rent], [Total Revenue], 0)
+Others % of Revenue		8	DIVIDE([Positive Others], [Total Revenue], 0)
+Interest and Tax as a % of Revenue		8	
+DIVIDE([Positive Interest and Tax], [Total Revenue], 0)
+Total Revenue % of Total Revenue		8	DIVIDE([Total Revenue], [Total Revenue], 0)
+Positive Total COGS % of Total Revenue		8	
+DIVIDE([Positive Total COGS], [Total Revenue], 0)
+Total OPEX as % of Total Revenue		8	
+DIVIDE([Positive Total OPEX], [Total Revenue], 0)
+Interest and Tax as % of Revenue		8	
+DIVIDE([Positive Interest and Tax], [Total Revenue], 0)
+Title selected value		2	"Income Statement for " & SELECTEDVALUE(dim_date[Month Name]) & " "& " " & 2023
